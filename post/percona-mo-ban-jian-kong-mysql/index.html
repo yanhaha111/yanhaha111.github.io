@@ -1,109 +1,549 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" >
 
+<head>
+  <meta charset="UTF-8" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="keywords" content="Gridea静态个人博客">
+<meta name="description" content="路漫漫其修远兮，吾将上下而求索">
+<meta name="theme-color" content="#000">
 <title>percona模版监控mysql | 超人不会飞</title>
+<link rel="shortcut icon" href="/favicon.ico?v=1614073676284">
+<link rel="stylesheet" href="/media/css/pisces.css">
+<link rel="stylesheet" href="/media/fonts/font-awesome.css">
+<link
+  href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Rosario:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext"
+  rel="stylesheet" type="text/css">
 
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link href="/media/hljs/styles/default.css"
+  rel="stylesheet">
 
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yanhaha111.github.io/yanjianshuai//favicon.ico?v=1614063668199">
-<link rel="stylesheet" href="https://yanhaha111.github.io/yanjianshuai//styles/main.css">
+<link rel="stylesheet" href="/styles/main.css">
 
-
-  
-    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
-  
-
-  
+<script src="/media/hljs/highlight.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.0/velocity.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/velocity-animate@1.5.0/velocity.ui.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"
+  integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
 
 
-<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"
+  integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"
+  integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+  onload="renderMathInElement(document.body);"></script>
 
 
 
-    <meta name="description" content="https://www.qstack.com.cn/archives/213.html
 
-1.安装php环境
-percona需要php环境
-[root@m01 /data/soft]# yum install php php-mysql -..." />
-    <meta name="keywords" content="" />
-  </head>
-  <body>
-    <div id="app" class="main">
 
-      <div class="sidebar" :class="{ 'full-height': menuVisible }">
-  <div class="top-container" data-aos="fade-right">
-    <div class="top-header-container">
-      <a class="site-title-container" href="https://yanhaha111.github.io/yanjianshuai/">
-        <img src="https://yanhaha111.github.io/yanjianshuai//images/avatar.png?v=1614063668199" class="site-logo">
-        <h1 class="site-title">超人不会飞</h1>
-      </a>
-      <div class="menu-btn" @click="menuVisible = !menuVisible">
-        <div class="line"></div>
+  <meta name="description" content="percona模版监控mysql" />
+  <meta name="keywords" content="" />
+</head>
+
+<body>
+  <div class="head-top-line"></div>
+  <div class="header-box">
+    
+<div class="pisces">
+  <header class="header  ">
+    <div class="blog-header box-shadow-wrapper bg-color " id="header">
+      <div class="nav-toggle" id="nav_toggle">
+        <div class="toggle-box">
+          <div class="line line-top"></div>
+          <div class="line line-center"></div>
+          <div class="line line-bottom"></div>
+        </div>
       </div>
+      <div class="site-meta">       
+        <div class="site-title">
+          
+            <a href="/" class="brand">
+              <span>超人不会飞</span>
+            </a>  
+          
+        </div>
+        
+          <p class="subtitle">精于心，简于形</p>
+        
+      </div>
+      <nav class="site-nav" id="site_nav">
+        <ul id="nav_ul">
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://yanhaha111.github.io/yanjianshuai//" target="_self">
+                  <i class="fa fa-globe"></i> 首页
+                </a>
+              
+            </li>
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://yanhaha111.github.io/yanjianshuai/archives/" target="_self">
+                  <i class="fa fa-globe"></i> 归档
+                </a>
+              
+            </li>
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://yanhaha111.github.io/yanjianshuai/tags/" target="_self">
+                  <i class="fa fa-globe"></i> 标签
+                </a>
+              
+            </li>
+          
+            
+            
+              
+            
+            <li class="nav-item ">
+              
+              
+                <a href="https://yanhaha111.github.io/yanjianshuai/post/about/" target="_self">
+                  <i class="fa fa-globe"></i> 关于
+                </a>
+              
+            </li>
+          
+          
+            
+              <li class="nav-item ">
+                <a href="/friends/" target="">
+                  
+                    <i class="fa fa-address-book"></i> 友情链接
+                  
+                </a>
+              </li>
+            
+          
+          
+            <li id="fa_search" class="nav-item">
+              <a href="javascript:void(0);">
+                <i class="fa fa-search"></i> <span class="language" data-lan="search">搜索</span>
+              </a>
+            </li>
+          
+        </ul>
+      </nav>
     </div>
-    <div>
+  </header>
+</div>
+
+<script type="text/javascript"> 
+ 
+  let showNav = true;
+
+  let navToggle = document.querySelector('#nav_toggle'),
+  siteNav = document.querySelector('#site_nav');
+  
+  function navClick() {
+    let sideBar = document.querySelector('.sidebar');
+    let navUl = document.querySelector('#nav_ul');
+    navToggle.classList.toggle('nav-toggle-active');
+    siteNav.classList.toggle('nav-menu-active');
+    if (siteNav.classList.contains('nav-menu-active')) {
+      siteNav.style = "height: " + (navUl.children.length * 42) +"px !important";
+    } else {
+      siteNav.style = "";
+    }
+  }
+
+  navToggle.addEventListener('click',navClick);  
+</script>
+  </div>
+  <div class="main-continer">
+    
+    <div
+      class="section-layout pisces ">
+      <div class="section-layout-wrapper">
+        
+
+<div class="sidebar">
+  
+    <div class="sidebar-box box-shadow-wrapper bg-color right-motion" id="sidebar">
       
-        
-          <a href="https://yanhaha111.github.io/yanjianshuai/" class="site-nav">
-            首页
-          </a>
-        
+        <div class="post-list-sidebar">
+          <div class="sidebar-title">
+            <span id="tocSideBar" class="sidebar-title-item sidebar-title-active language" data-lan="index">文章目录</span>
+            <span id="metaSideBar" class="sidebar-title-item language" data-lan="preview">站点概览</span>
+          </div>
+        </div>
       
+      <div class="sidebar-body pisces" id="sidebar_body">
         
-          <a href="https://yanhaha111.github.io/yanjianshuai/archives" class="site-nav">
-            归档
-          </a>
+          
+            <div class="post-side-meta" id="post_side_meta">
+              
+<div class="sidebar-wrapper box-shadow-wrapper bg-color">
+  <div class="sidebar-item">
+    <img class="site-author-image right-motion" src="/images/avatar.png"/>
+    <p class="site-author-name">适用 Gemini,Pisces 布局,版权说明需配置</p>
+    
+  </div>
+  <div class="sidebar-item side-item-stat right-motion">
+    <div class="sidebar-item-box">
+      <a href="/archives/">
         
-      
-        
-          <a href="https://yanhaha111.github.io/yanjianshuai/tags" class="site-nav">
-            标签
-          </a>
-        
-      
-        
-          <a href="https://yanhaha111.github.io/yanjianshuai/post/about" class="site-nav">
-            关于
-          </a>
-        
-      
+        <span class="site-item-stat-count">3</span>
+        <span class="site-item-stat-name language" data-lan="article">文章</span>
+      </a>
+    </div>
+    <div class="sidebar-item-box">
+      <a href="">
+        <span class="site-item-stat-count">0</span>
+        <span class="site-item-stat-name language" data-lan="category">分类</span>
+      </a>
+    </div>
+    <div class="sidebar-item-box">
+      <a href="/tags/">
+        <span class="site-item-stat-count">0</span>
+        <span class="site-item-stat-name language" data-lan="tag">标签</span>
+      </a>
     </div>
   </div>
-  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
-    <div class="social-container">
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    </div>
-    <div class="site-description">
-      路漫漫其修远兮，吾将上下而求索
-    </div>
-    <div class="site-footer">
-       | <a class="rss" href="https://yanhaha111.github.io/yanjianshuai//atom.xml" target="_blank">RSS</a>
-    </div>
+  
+    
+  
+  
+
+
+
+  <div style="width: 100%; position: relative;">
+    <canvas id="canvasDiyBlock" style="width:100%;">当前浏览器不支持canvas，请更换浏览器后再试</canvas>
+    <script src="/media/js/magic/clock.js"></script>
+  </div>
+
+</div>
+            </div>
+            <div class="post-toc sidebar-body-active" id="post_toc" style="opacity: 1;">
+              <div class="toc-box right-motion">
+  <div class="toc-wrapper auto-number auto"
+    id="toc_wrapper">
+    <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#1%E5%AE%89%E8%A3%85php%E7%8E%AF%E5%A2%83">1.安装php环境</a></li>
+<li><a href="#2%E4%B8%8B%E8%BD%BD%E8%BD%AF%E4%BB%B6">2.下载软件</a></li>
+<li><a href="#3%E6%9F%A5%E7%9C%8B%E7%9B%AE%E5%BD%95">3.查看目录</a></li>
+<li><a href="#4%E4%BF%AE%E6%94%B9get_mysql_stats_wrappersh">4.修改get_mysql_stats_wrapper.sh</a></li>
+<li><a href="#5%E4%BF%AE%E6%94%B9ss_get_mysql_statsphp">5.修改ss_get_mysql_stats.php</a></li>
+<li><a href="#6%E5%A4%8D%E5%88%B6%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9B%91%E6%8E%A7%E9%A1%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%88%B0zabbix%E7%9B%AE%E5%BD%95">6.复制自定义监控项配置文件到zabbix目录</a></li>
+<li><a href="#7%E9%87%8D%E5%90%AFagent">7.重启agent</a></li>
+<li><a href="#8%E6%B5%8B%E8%AF%95key">8.测试key</a></li>
+<li><a href="#9%E5%AF%BC%E5%85%A5%E6%A8%A1%E7%89%88">9.导入模版</a></li>
+<li><a href="#10%E4%B8%BB%E6%9C%BA%E9%93%BE%E6%8E%A5%E6%A8%A1%E7%89%88">10.主机链接模版</a></li>
+<li><a href="#xx%E6%8A%A5%E9%94%99%E8%A7%A3%E5%86%B3">xx.报错解决</a></li>
+</ul>
+</li>
+</ul>
+
   </div>
 </div>
 
+<script>
 
-      <div class="main-container">
-        <div class="content-container" data-aos="fade-up">
-          <div class="post-detail">
-            <h2 class="post-title">percona模版监控mysql</h2>
-            <div class="post-date">2021-02-21</div>
-            
-            <div class="post-content" v-pre>
+  let lastTop = 0, lList = [], hList = [], postBody, lastIndex = -1;
+  let active = 'active-show', activeClass = 'active-current';
+  let tocWrapper = document.querySelector('#toc_wrapper');
+  let tocContent = tocWrapper.children[0];
+  let autoNumber = tocWrapper && tocWrapper.classList.contains('auto-number');
+
+  function addTocNumber(elem, deep) {
+    if (!elem) {
+      return;
+    }
+    let prop = elem.__proto__;
+
+    if (prop === HTMLUListElement.prototype) {
+      for (let i = 0; i < elem.children.length; i++) {
+        addTocNumber(elem.children[i], deep + (i + 1) + '.');
+      }
+    } else if (prop === HTMLLIElement.prototype) {
+      // 保存li元素
+      if (elem.children[0] && elem.children[0].__proto__ === HTMLAnchorElement.prototype) {
+        lList.push(elem);
+      }
+      for (let i = 0; i < elem.children.length; i++) {
+        let cur = elem.children[i];
+        if (cur.__proto__ === HTMLAnchorElement.prototype) {
+          if (autoNumber) {
+            cur.text = deep + ' ' + cur.text;
+          }
+        } else if (cur.__proto__ === HTMLUListElement.prototype) {
+          addTocNumber(cur, deep);
+        }
+      }
+    }
+  }
+
+  function removeParentActiveClass() {
+    let parents = tocContent.querySelectorAll('.' + active)
+    parents.forEach(function (elem) {
+      elem.classList.remove(active);
+    });
+  }
+
+  function addActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.add(activeClass);
+    }
+  }
+
+  function removeActiveClass(index) {
+    if (index >= 0 && index < hList.length) {
+      lList[index].classList.remove(activeClass);
+    }
+  }
+
+  function addActiveLiElemment(elem, parent) {
+    if (!elem || elem === parent) {
+      return;
+    } else {
+      if (elem.__proto__ === HTMLLIElement.prototype) {
+        elem.classList.add(active);
+      }
+      addActiveLiElemment(elem.parentElement, parent);
+    }
+  }
+
+  function showToc() {
+    if (tocWrapper) {
+      postBody = document.querySelector('#post_body');
+      for (let i = 0; i < postBody.children.length; i++) {
+        if (postBody.children[i].__proto__ === HTMLHeadingElement.prototype) {
+          hList.push(postBody.children[i]);
+        }
+      }
+      if (tocWrapper.classList.contains('compress')) {
+        tocContent.classList.add('closed');
+      } else if (tocWrapper.classList.contains('no_compress')) {
+        tocContent.classList.add('expanded');
+      } else {
+        if (hList.length > 10) {
+          active = 'active-hidden'
+          tocContent.classList.add('closed');
+        } else {
+          tocContent.classList.add('expanded');
+        }
+      }
+    }
+  }
+
+  (function () {
+    // 处理不是从#一级标题开始目录
+    if (tocContent.children.length === 1 && tocContent.children[0].__proto__ === HTMLLIElement.prototype) {
+      let con = tocContent.children[0].children[0];
+      tocContent.innerHTML = con.innerHTML;
+    }
+    let markdownItTOC = document.querySelector('.markdownIt-TOC');
+    let innerHeight = window.innerHeight;
+    markdownItTOC.style = `max-height: ${innerHeight - 80 > 0 ? innerHeight - 80 : innerHeight}px`
+    addTocNumber(tocContent, '');
+  })();
+
+  document.addEventListener('scroll', function (e) {
+    if (lList.length <= 0) {
+      return;
+    }
+    let scrollTop = document.scrollingElement.scrollTop + 10;
+    let dir;
+
+    if (lastTop - scrollTop > 0) {
+      dir = 'up';
+    } else {
+      dir = 'down';
+    }
+
+    lastTop = scrollTop;
+    if (scrollTop <= 0) {
+      if (lastIndex >= 0 && lastIndex < hList.length) {
+        lList[lastIndex].classList.remove(activeClass);
+      }
+      return;
+    }
+
+    let current = 0, hasFind = false;
+    for (let i = 0; i < hList.length; i++) {
+      if (hList[i].offsetTop > scrollTop) {
+        current = i;
+        hasFind = true;
+        break;
+      }
+    }
+    if (!hasFind && scrollTop > lList[lList.length - 1].offsetTop) {
+      current = hList.length - 1;
+    } else {
+      current--;
+    }
+    if (dir === 'down') {
+      if (current > lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex)
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    } else {
+      if (current < lastIndex) {
+        addActiveClass(current);
+        removeActiveClass(lastIndex);
+        lastIndex = current;
+        removeParentActiveClass();
+        lList[current] && addActiveLiElemment(lList[current].parentElement, tocContent);
+      }
+    }
+  });
+
+
+  window.addEventListener('load', function () {
+    showToc();
+    document.querySelector('#sidebar').style = 'display: block;';
+    tocWrapper.classList.add('toc-active');
+    setTimeout(function () {
+      if ("createEvent" in document) {
+        let evt = document.createEvent("HTMLEvents");
+        evt.initEvent("scroll", false, true);
+        document.dispatchEvent(evt);
+      }
+      else {
+        document.fireEvent("scroll");
+      }
+    }, 500)
+  })
+
+</script>
+            </div>
+          
+        
+      </div>
+    </div>
+  
+</div>
+<script>
+  const SIDEBAR_TITLE_ACTIVE = 'sidebar-title-active';
+  const SIDEBAR_BODY_ACTIVE = 'sidebar-body-active';
+  const SLIDE_UP_IN = 'slide-up-in';
+
+  let sidebar = document.querySelector('#sidebar'),
+  tocSideBar = document.querySelector('#tocSideBar'),
+  metaSideBar = document.querySelector('#metaSideBar'),
+  postToc = document.querySelector('#post_toc'),
+  postSiteMeta = document.querySelector('#post_side_meta'),
+  sidebarTitle = document.querySelector('.sidebar-title'),
+  sidebarBody = document.querySelector('#sidebar_body');
+
+  tocSideBar && tocSideBar.addEventListener('click', (e) => {
+    toggleSidebar(e);
+  });
+
+  metaSideBar && metaSideBar.addEventListener('click', (e) => {
+    toggleSidebar(e);
+  });
+
+  function toggleSidebar(e) {
+    let currentTitle = document.querySelector("."+SIDEBAR_TITLE_ACTIVE);
+    if (currentTitle == e.srcElement) {
+      return ;
+    }
+    let current, showElement, hideElement;
+    if (e.srcElement == metaSideBar) {
+      showElement = postSiteMeta;
+      hideElement = postToc;
+    } else if (e.srcElement == tocSideBar){
+      showElement = postToc;
+      hideElement = postSiteMeta;
+    }
+    currentTitle.classList.remove(SIDEBAR_TITLE_ACTIVE);
+    e.srcElement.classList.add(SIDEBAR_TITLE_ACTIVE);
+
+    window.Velocity(hideElement, 'stop');
+    window.Velocity(hideElement, 'transition.slideUpOut', {
+      display: 'none',
+      duration: 200,
+      complete: function () {
+        window.Velocity(showElement, 'transition.slideDownIn', {
+          duration: 200
+        });
+      }
+    })
+    hideElement.classList.remove(SIDEBAR_BODY_ACTIVE);
+    showElement.classList.add(SIDEBAR_BODY_ACTIVE);
+  }
+
+  postToc && postToc.addEventListener('transitionend', function() {
+    this.classList.remove(SLIDE_UP_IN);
+  });
+
+  if (sidebarBody) {
+    if (sidebarBody.classList.contains('pisces') || sidebarBody.classList.contains('gemini')) {
+      let hasFix = false;
+      let scrollEl = document.querySelector('.main-continer');
+      let limitTop = document.querySelector('#nav_ul').children.length * 42 + 162;
+      window.addEventListener('scroll', function(e) {
+        if (document.scrollingElement.scrollTop >= limitTop) {
+          if (!hasFix) {
+            sidebar.classList.add('sidebar-fixed');
+            hasFix = true;
+          }
+        } else {
+          if (hasFix) {
+            sidebar.classList.remove('sidebar-fixed');
+            hasFix = false;
+          }
+        }
+      });
+    }
+  }
+  
+</script>
+        <div class="section-box box-shadow-wrapper">
+          <div class="section bg-color post post-page">
+            <section class="post-header">
+  <h1 class="post-title">
+    <a class="post-title-link" href="https://yanhaha111.github.io/yanjianshuai/post/percona-mo-ban-jian-kong-mysql/">
+      percona模版监控mysql
+    </a>
+  </h1>
+  <div class="post-meta">
+    
+    <span class="meta-item pc-show">
+      <i class="fa fa-calendar-o"></i>
+      <span class="language" data-lan="publish">发布于</span>
+      <span class="publish-time" data-t="2021-02-21 02:38:25">2021-02-21</span>
+      <span class="post-meta-divider pc-show">|</span>
+    </span>
+    
+    <span class="meta-item">
+      <i class="fa fa-clock-o"></i>
+      <span>4<span class="language" data-lan="minute">分钟</span></span>
+    </span>
+    <span class="meta-item">
+      <span class="post-meta-divider">|</span>
+      <i class="fa fa-file-word-o"></i>
+      <span>718<span class="pc-show language" data-lan="words">字数</span></span>
+    </span>
+    
+  </div>
+</section>
+            <div class="post-body next-md-body" id="post_body">
               <pre><code class="language-cpp">https://www.qstack.com.cn/archives/213.html
 </code></pre>
 <h2 id="1安装php环境">1.安装php环境</h2>
@@ -189,67 +629,1101 @@ userparameter_mysql.conf  userparameter_percona_mysql.conf
             </div>
             
             
-
+              <div class="post-footer">
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong class="language" data-lan="author">本文作者：</strong>
+      适用 Gemini,Pisces 布局,版权说明需配置
+    </li>
+    <li class="post-copyright-link">
+      <strong class="language" data-lan="link">本文链接：</strong>
+      <a href="https://yanhaha111.github.io/yanjianshuai/post/percona-mo-ban-jian-kong-mysql/" title="percona模版监控mysql">https://yanhaha111.github.io/yanjianshuai/post/percona-mo-ban-jian-kong-mysql/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong class="language" data-lan="copyright">版权声明： </strong>
+      本博客所有文章除特别声明外，均采用<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i> BY-NC-SA</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+  <div class="tags">
+    
+  </div>
+  <div class="nav">
+    <div class="nav-prev">
+      
+        <i class="fa fa-chevron-left"></i>
+        <a class="nav-pc-next" title="欢迎大家来到小帅的博客！！！" href="https://yanhaha111.github.io/yanjianshuai/post/huan-ying-da-jia-lai-dao-xiao-shuai-de-bo-ke/">欢迎大家来到小帅的博客！！！</a class="nav-pc-next">
+        <a class="nav-mobile-prev" title="欢迎大家来到小帅的博客！！！" href="https://yanhaha111.github.io/yanjianshuai/post/huan-ying-da-jia-lai-dao-xiao-shuai-de-bo-ke/">上一篇</a>
+      
+    </div>
+    <div class="nav-next">
+      
+    </div>
+  </div>
+</div>
             
-              
-                <div id="gitalk-container" data-aos="fade-in"></div>
-              
-
-              
             
+  
+    
+      <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '',
+    clientSecret: '',
+    repo: '',
+    owner: '',
+    admin: [''],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+  gitalk.render('gitalk-container')
+</script>
+    
+    
+  
 
           </div>
-
         </div>
       </div>
     </div>
+    <div class="footer-box">
+  <footer class="footer">
+    <div class="copyright">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | © 2019-2020 Theme By <a
+        href="https://github.com/hsxyhao/gridea-theme-next" target="_blank">HsxyHao</a>
+    </div>
+    <div class="poweredby">
+      
+    </div>
+  </footer>
+  
+  
+  <div class="pisces back-to-top" id="back_to_top">
+    <i class="fa fa-arrow-up"></i>
+    
+    <span class="scrollpercent">
+      <span id="back_to_top_text">0</span>%
+    </span>
+    
+  </div>
+  
+  
+  
+  <div class="bg-img">
+    <img src="\media\images\custom-bgImg.jpg" />
+  </div>
+  
+  
+  
+  
+</div>
+<script>
 
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-<script type="application/javascript">
+  let sideBarOpen = 'sidebar-open';
+  let body = document.body;
+  let back2Top = document.querySelector('#back_to_top'),
+    back2TopText = document.querySelector('#back_to_top_text'),
+    drawerBox = document.querySelector('#drawer_box'),
+    rightSideBar = document.querySelector('.sidebar'),
+    viewport = document.querySelector('body');
 
-AOS.init();
+  function scrollAnimation(currentY, targetY) {
 
-var app = new Vue({
-  el: '#app',
-  data: {
-    menuVisible: false,
-  },
-})
+    let needScrollTop = targetY - currentY
+    let _currentY = currentY
+    setTimeout(() => {
+      const dist = Math.ceil(needScrollTop / 10)
+      _currentY += dist
+      window.scrollTo(_currentY, currentY)
+      if (needScrollTop > 10 || needScrollTop < -10) {
+        scrollAnimation(_currentY, targetY)
+      } else {
+        window.scrollTo(_currentY, targetY)
+      }
+    }, 1)
+  }
+
+  back2Top.addEventListener("click", function (e) {
+    scrollAnimation(document.scrollingElement.scrollTop, 0);
+    e.stopPropagation();
+    return false;
+  });
+
+  window.addEventListener('scroll', function (e) {
+    let percent = document.scrollingElement.scrollTop / (document.scrollingElement.scrollHeight - document.scrollingElement.clientHeight) * 100;
+    if (percent > 1 && !back2Top.classList.contains('back-top-active')) {
+      back2Top.classList.add('back-top-active');
+    }
+    if (percent == 0) {
+      back2Top.classList.remove('back-top-active');
+    }
+    if (back2TopText) {
+      back2TopText.textContent = Math.floor(percent);
+    }
+  });
+
+
+  let hasCacu = false;
+  window.onresize = function () {
+    calcuHeight();
+  }
+
+  function calcuHeight() {
+    // 动态调整站点概览高度
+    if (!hasCacu && back2Top.classList.contains('pisces') || back2Top.classList.contains('gemini')) {
+      let sideBar = document.querySelector('.sidebar');
+      let navUl = document.querySelector('#site_nav');
+      sideBar.style = 'margin-top:' + (navUl.offsetHeight + navUl.offsetTop + 15) + 'px;';
+      hasCacu = true;
+    }
+  }
+  calcuHeight();
+
+  let open = false, MOTION_TIME = 300, RIGHT_MOVE_DIS = '320px';
+
+  if (drawerBox) {
+    let rightMotions = document.querySelectorAll('.right-motion');
+    let right = drawerBox.classList.contains('right');
+
+    let transitionDir = right ? "transition.slideRightIn" : "transition.slideLeftIn";
+
+    let openProp, closeProp;
+    if (right) {
+      openProp = {
+        paddingRight: RIGHT_MOVE_DIS
+      };
+      closeProp = {
+        paddingRight: '0px'
+      };
+    } else {
+      openProp = {
+        paddingLeft: RIGHT_MOVE_DIS
+      };
+      closeProp = {
+        paddingLeft: '0px'
+      };
+    }
+
+    drawerBox.onclick = function () {
+      open = !open;
+      window.Velocity(rightSideBar, 'stop');
+      window.Velocity(viewport, 'stop');
+      window.Velocity(rightMotions, 'stop');
+      if (open) {
+        window.Velocity(rightSideBar, {
+          width: RIGHT_MOVE_DIS
+        }, {
+          duration: MOTION_TIME,
+          begin: function () {
+            window.Velocity(rightMotions, transitionDir, {});
+          }
+        })
+        window.Velocity(viewport, openProp, {
+          duration: MOTION_TIME
+        });
+      } else {
+        window.Velocity(rightSideBar, {
+          width: '0px'
+        }, {
+          duration: MOTION_TIME,
+          begin: function () {
+            window.Velocity(rightMotions, {
+              opacity: 0
+            });
+          }
+        })
+        window.Velocity(viewport, closeProp, {
+          duration: MOTION_TIME
+        });
+      }
+      for (let i = 0; i < drawerBox.children.length; i++) {
+        drawerBox.children[i].classList.toggle('muse-line');
+      }
+      drawerBox.classList.toggle(sideBarOpen);
+    }
+  }
+
+  // 链接跳转
+  let newWindow = 'false'
+  if (newWindow === 'true') {
+    let links = document.querySelectorAll('.post-body a')
+    links.forEach(item => {
+      if (!item.classList.contains('btn')) {
+        item.setAttribute("target", "_blank");
+      }
+    })
+  }
+
+  let faSearch = document.querySelector('#fa_search');
+  faSearch.addEventListener('click', function () {
+    document.querySelector('#search_mask').style = ''
+  })
+
+  // 代码高亮
+  hljs.initHighlightingOnLoad();
+  
+  // 离开当前页title变化
+  var leaveTitle = "";
+  if (leaveTitle) {
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState == 'hidden') {
+        normal_title = document.title;
+        document.title = leaveTitle;
+      } else {
+        document.title = normal_title;
+      }
+    });
+  }
 
 </script>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 
-  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
-  <script>
-    hljs.initHighlightingOnLoad()
-  </script>
+<script>
+  let images = document.querySelectorAll('.section img');
+  console.log(images);
+  images.forEach(image => {
+    var parent = image.parentElement;
+    var next = image.nextElementSibling;
+    parent.removeChild(image);
+    var aelem = document.createElement('a');
+    aelem.href = image.src;
+    aelem.dataset['fancybox'] = 'images';
+    aelem.dataset['rel'] = 'fancybox-button';
+    aelem.classList.add('fancybox');
+    aelem.appendChild(image);
+    parent.insertBefore(aelem, next);
+  })
+</script>
+    <div class="reward-mask" style="display: none;">
+  <div class="reward-relative">
+    <span class="close" aria-hidden="true">x</span>
+    <div class="reward-body">
+      <h2>感谢您的支持，我会继续努力的!</h2>
+      <div class="reward-img-box">
+        <div style="position: relative; width: 140px; height: 140px;">
+          
+          
+          
+        </div>
+      </div>
+      <p class="reward-word">扫码打赏，你说多少就多少</p>
+      <p class="reward-tip">打开微信扫一扫，即可进行扫码打赏哦</p>
+    </div>
+    <div class="bottom">
+      
+      
+    </div>
+  </div>
+</div>
+<style>
+  .reward-mask {
+    position: fixed;
+    z-index: 99999;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #00000054;
+  }
 
+  .reward-relative {
+    position: relative;
+    width: 480px;
+    text-align: center;
+    margin: 0 auto;
+    border-radius: 5px;
+    background-color: #fff;
+    top: 50%;
+    margin-top: -205px;
+  }
 
+  .reward-relative .close {
+    position: absolute;
+    right: 10px;
+    font-weight: normal;
+    font-size: 16px;
+    color: #929292;
+  }
 
+  .reward-body {
+    padding: 40px 20px 20px;
+  }
 
-  
-    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-    <script>
+  .bottom {
+    display: flex;
+  }
 
-      var gitalk = new Gitalk({
-        clientID: '',
-        clientSecret: '',
-        repo: '',
-        owner: '',
-        admin: [''],
-        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
-        distractionFreeMode: false  // Facebook-like distraction free mode
+  .reward-btn {
+    text-align: center;
+  }
+
+  .reward-btn-text {
+    display: inline-block;
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    background-color: #ff9734;
+    color: #FFF;
+    margin-top: 20px;
+  }
+
+  .pay-text {
+    margin-top: 10px;
+    padding: 10px;
+    flex: 1;
+    transition: all .2s linear;
+  }
+
+  .pay-text:hover {
+    background-color: #a5a5a536;
+  }
+
+  .reward-body h2 {
+    padding-top: 10px;
+    text-align: center;
+    color: #a3a3a3;
+    font-size: 16px;
+    font-weight: normal;
+    margin: 0 0 20px;
+  }
+
+  .reward-body h2:after,
+  .reward-body h2:before {
+    font-family: Arial, Helvetica, sans-serif;
+    background: 0 0;
+    width: 0;
+    height: 0;
+    font-style: normal;
+    color: #eee;
+    font-size: 80px;
+    position: absolute;
+    top: 20px;
+  }
+
+  .reward-body h2:before {
+    content: '\201c';
+    left: 50px;
+  }
+
+  .reward-body h2:after {
+    content: '\201d';
+    right: 80px;
+  }
+
+  .reward-img-box {
+    display: inline-block;
+    padding: 10px;
+    border: 6px solid #ea5f00;
+    margin: 0 auto;
+    border-radius: 3px;
+    position: relative;
+  }
+
+  .reward-img {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (max-width: 767px) {
+    .reward-relative {
+      height: 100%;
+      top: 0px;
+      margin-top: 0;
+      width: auto;
+    }
+
+    .reward-relative .bottom {
+      flex-direction: column;
+    }
+
+    .reward-relative .pay-text {
+      width: 80%;
+      margin: 5px auto;
+      border: 1px solid silver;
+      padding: 6px;
+      border-radius: 4px;
+    }
+
+    .reward-body h2:after {
+      right: 40px;
+    }
+
+    .reward-body h2:after,
+    .reward-body h2:before {
+      font-size: 60px;
+    }
+
+    .reward-body h2:before {
+      left: 20px;
+    }
+  }
+</style>
+<script>
+  !function () {
+    var mask = document.querySelector('.reward-mask');
+    let close = document.querySelector('.reward-relative .close');
+    let rewardBtn = document.querySelector('.reward-btn');
+
+    let zfb = document.querySelector('#zfb'),
+      wx = document.querySelector('#wx'),
+      zfbBtn = document.querySelector('#zfbBtn'),
+      wxBtn = document.querySelector('#wxBtn');
+
+    if (zfbBtn && wxBtn) {
+      zfbBtn.addEventListener('click', () => {
+        window.Velocity(zfb, 'transition.slideLeftIn', {
+          duration: 400
+        });
+        window.Velocity(wx, 'transition.slideRightOut', {
+          display: 'none',
+          duration: 400
+        });
+      });
+
+      wxBtn.addEventListener('click', () => {
+        window.Velocity(wx, 'transition.slideRightIn', {
+          duration: 400
+        });
+        window.Velocity(zfb, 'transition.slideLeftOut', {
+          display: 'none',
+          duration: 400
+        });
+      });
+    }
+
+    rewardBtn.addEventListener('click', (e) => {
+      window.Velocity(mask, 'transition.slideDownIn', {
+        duration: 400
       })
+    });
 
-      gitalk.render('gitalk-container')
+    close.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.Velocity(mask, 'transition.slideUpOut', {
+        duration: 400
+      })
+    })
+  }()
+</script>
 
-    </script>
-  
+  </div>
+</body>
 
-  
+<div class="search-mask" id="search_mask" style="display: none;">
+  <div class="search-box">
+    <div class="search-title">
+      <i class="fa fa-search"></i>
+      <div class="input-box">
+        <input id="search" type="text" class="language" data-lan="search" placeholder="搜索">
+      </div>
+      <i id="close" class="fa fa-times-circle"></i>
+    </div>
+    <div class="stat-box">
+      <span id="stat_count">0</span><span class="language" data-lan="stat">条相关条目，使用了</span><span id="stat_times">0</span><span class="language" data-lan="stat-time">毫秒</span>
+      <hr>
+    </div>
+    <div class="result" id="result">
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://yanhaha111.github.io/yanjianshuai/post/kafka-ji-qun-da-jian/"" data-c="
+          &lt;h2 id=&#34;kafkazookper&#34;&gt;kafka+zookper&lt;/h2&gt;
+&lt;h2 id=&#34;一-环境准备&#34;&gt;一. 环境准备&lt;/h2&gt;
+&lt;p&gt;关闭selinux，关闭防火墙&lt;/p&gt;
+&lt;p&gt;kafka 版本:  kafka_2.11-2.1.0&lt;/p&gt;
+&lt;p&gt;zookpeeper版本: 3.4.12&lt;/p&gt;
+&lt;p&gt;jdk: 1.8&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;ip&lt;/th&gt;
+&lt;th&gt;角色&lt;/th&gt;
+&lt;th&gt;系统&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;172.10.10.226&lt;/td&gt;
+&lt;td&gt;zookeeper+kafka&lt;/td&gt;
+&lt;td&gt;redhat7.3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;172.10.10.225&lt;/td&gt;
+&lt;td&gt;zookeeper+kafka&lt;/td&gt;
+&lt;td&gt;redhat7.3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;172.10.10.224&lt;/td&gt;
+&lt;td&gt;zookeeper+kafka&lt;/td&gt;
+&lt;td&gt;redhat7.3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;二-zookeeper集群搭建&#34;&gt;二. zookeeper集群搭建&lt;/h2&gt;
+&lt;h3 id=&#34;21-jdk-安装&#34;&gt;2.1 jdk 安装&lt;/h3&gt;
+&lt;p&gt;也可自己下载安装,这里用的yum&lt;/p&gt;
+&lt;p&gt;JDK下载地址：http://www.oracle.com/technetwork/java/javase/downloads/index.html&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;rpm -ivh jdk-8u101-linux-x64.rpm
+yum install java-1.8.0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;22-zookeeper安装&#34;&gt;2.2 zookeeper安装&lt;/h3&gt;
+&lt;p&gt;Zookeeper链接：http://zookeeper.apache.org/&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;wget http://mirrors.cnnic.cn/apache/zookeeper/zookeeper-3.4.12/zookeeper-3.4.12.tar.gz -P /mnt
+tar zxvf zookeeper-3.4.12.tar.gz -C /mnt
+cd /mnt &amp;amp;&amp;amp; mv zookeeper-3.4.12 zookeeper
+cd zookeeper
+cp conf/zoo_sample.cfg conf/zoo.cfg
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;#把zookeeper加入到环境变量&lt;/p&gt;
+&lt;p&gt;echo -e &amp;quot;# append zk_env\nexport PATH=$PATH:/opt/zookeeper/bin&amp;quot; &amp;gt;&amp;gt; /etc/profile&lt;/p&gt;
+&lt;h3 id=&#34;23-zookeeper集群配置&#34;&gt;2.3  zookeeper集群配置&lt;/h3&gt;
+&lt;p&gt;2.3.1 zookeeper配置文件修改.在zookeeper的conf目录创建&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;tickTime=2000
+initLimit=10
+syncLimit=5
+dataLogDir=/mnt/zookeeper/logs
+dataDir=/mnt/zookeeper/data
+clientPort=2181
+#autopurge.snapRetainCount=500
+#autopurge.purgeInterval=24
+server.1= 172.10.10.226:2888:3888  #server.1 中的1表示的该node的id，要和后面myid文件中保持一致
+server.2= 172.10.10.225:2888:3888
+server.3= 172.10.10.224:2888:3888#######参数说明
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;tickTime这个时间是作为zookeeper服务器之间或客户端与服务器之间维持心跳的时间间隔,也就是说每个tickTime时间就会发送一个心跳。
+
+initLimit这个配置项是用来配置zookeeper接受客户端（这里所说的客户端不是用户连接zookeeper服务器的客户端,而是zookeeper服务器集群中连接到leader的follower 服务器）初始化连接时最长能忍受多少个心跳时间间隔数。
+
+当已经超过10个心跳的时间（也就是tickTime）长度后 zookeeper 服务器还没有收到客户端的返回信息,那么表明这个客户端连接失败。总的时间长度就是 10*2000=20秒。
+
+syncLimit这个配置项标识leader与follower之间发送消息,请求和应答时间长度,最长不能超过多少个tickTime的时间长度,总的时间长度就是5*2000=10秒。
+
+dataDir顾名思义就是zookeeper保存数据的目录,默认情况下zookeeper将写数据的日志文件也保存在这个目录里；
+
+clientPort这个端口就是客户端连接Zookeeper服务器的端口,Zookeeper会监听这个端口接受客户端的访问请求；
+
+server.A=B:C:D中的A是一个数字,表示这个是第几号服务器,B是这个服务器的IP地址，C第一个端口用来集群成员的信息交换,表示这个服务器与集群中的leader服务器交换信息的端口，D是在leader挂掉时专门用来进行选举leader所用的端口。
+
+\#创建相关目录，三台节点都需要
+
+mkdir -p /mnt/zookeeper/{logs,data}
+
+\#其余zookeeper节点安装完成之后，同步配置文件zoo.cfg。
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;2.3.2  创建serverid表识&lt;/p&gt;
+&lt;p&gt;除了修改zoo.cfg配置文件外,zookeeper集群模式下还要配置一个myid文件,这个文件需要放在dataDir目录下。&lt;/p&gt;
+&lt;p&gt;这个文件里面有一个数据就是A的值（该A就是zoo.cfg文件中server.A=B:C:D中的A）,在zoo.cfg文件中配置的dataDir路径中创建myid文件。&lt;/p&gt;
+&lt;p&gt;#在172.10.10.226服务器上面创建myid文件，并设置值为1，同时与zoo.cfg文件里面的server.1保持一致，如下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;echo &amp;quot;1&amp;quot; &amp;gt; /mnt/zookeeper/data/myid
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其它2台id分别为  2  ，3&lt;/p&gt;
+&lt;h3 id=&#34;24-启动每个服务器上的集群节点&#34;&gt;2.4. 启动每个服务器上的集群节点&lt;/h3&gt;
+&lt;p&gt;/mnt/zookeeper/bin/zkServer.sh start   #启动&lt;/p&gt;
+&lt;p&gt;/mnt/zookeeper/bin/zkServer.sh status  #查看&lt;/p&gt;
+&lt;p&gt;bin/zkCli.sh -server 172.10.10.225:2181  #模拟客户端连接&lt;/p&gt;
+&lt;p&gt;Zookeeper集群搭建完毕之后，可以通过客户端脚本连接到zookeeper集群上面，对客户端来说，zookeeper集群是一个整体，连接到zookeeper集群实际上感觉在独享整个集群的服务。&lt;/p&gt;
+&lt;h2 id=&#34;三-kafka集群搭建&#34;&gt;三. kafka集群搭建&lt;/h2&gt;
+&lt;h3 id=&#34;1-每台服务器上下载解压kafka&#34;&gt;1. 每台服务器上下载解压kafka.&lt;/h3&gt;
+&lt;p&gt;下载地址：  http://kafka.apache.org/downloads&lt;/p&gt;
+&lt;h3 id=&#34;2-配置conf目录下的serverproperties&#34;&gt;2. 配置conf目录下的server.properties&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-shell&#34;&gt;[root@r0 kafka_2.11-2.1.0]# grep -E  -v &amp;quot;^#|^$&amp;quot; config/server.properties 
+broker.id=0  ###集群中唯一
+listeners=PLAINTEXT://172.10.10.226:9092 ####本地ip:端口
+num.network.threads=3
+num.io.threads=8
+socket.send.buffer.bytes=102400
+socket.receive.buffer.bytes=102400
+socket.request.max.bytes=104857600
+log.dirs=/tmp/kafka-logs
+num.partitions=3  #### 一个topic的partition个数
+num.recovery.threads.per.data.dir=1
+offsets.topic.replication.factor=1
+transaction.state.log.replication.factor=1
+transaction.state.log.min.isr=1
+replication.factor=2   ##### 每个partition的副本
+log.retention.hours=168
+log.segment.bytes=1073741824
+log.retention.check.interval.ms=300000
+zookeeper.connect=172.10.10.226:2181,172.10.10.225:2181,172.10.10.224:2181 ####zookeeper集群.
+zookeeper.connection.timeout.ms=6000
+group.initial.rebalance.delay.ms=0delete.topic.enable=true  ########可删除topic
+ 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;将上述配置文件复制到另外2台服务器，并修改每个节点对应的 server.properties 文件的 broker.id和listenrs&lt;/p&gt;
+&lt;h3 id=&#34;3-启动服务&#34;&gt;3. 启动服务&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;bin/kafka-server-start.sh config/server.properties &amp;amp;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;4-kafkazookeeper测试&#34;&gt;4. kafka+zookeeper测试&lt;/h3&gt;
+&lt;p&gt;创建topic&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;bin/kafka-topics.sh --create --zookeeper 172.10.10.226:2181,172.10.10.225:2182,172.10.10.224:2183 --replication-factor 2  --partitions 3 --topic test
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;显示topic&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;bin/kafka-topics.sh --describe --zookeeper 172.10.10.226:2181,172.10.10.225:2182,172.10.10.224:2183 --topic test
+OpenJDK 64-Bit Server VM warning: If the number of processors is expected to increase from one, then you should configure the number of parallel GC threads appropriately using -XX:ParallelGCThreads=N
+Topic:test    PartitionCount:3    ReplicationFactor:2    Configs:
+    Topic: test    Partition: 0    Leader: 0    Replicas: 0,1    Isr: 0,1
+    Topic: test    Partition: 1    Leader: 1    Replicas: 1,2    Isr: 1,2
+    Topic: test    Partition: 2    Leader: 2    Replicas: 2,0    Isr: 2,0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;创建 producer(生产者):&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[root@r0 kafka_2.11-2.1.0]# bin/kafka-console-producer.sh --broker-list 172.10.10.226:9092 -topic test
+OpenJDK 64-Bit Server VM warning: If the number of processors is expected to increase from one, then you should configure the number of parallel GC threads appropriately using -XX:ParallelGCThreads=N
+&amp;gt;
+
+&amp;gt;&amp;gt;1111
+&amp;gt;2222
+&amp;gt;333
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;创建 consumer(消费者):&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[root@r2 kafka_2.11-2.1.0]# bin/kafka-console-consumer.sh --bootstrap-server 172.10.10.226:9092,172.10.10.225:9092,172.10.10.224:9092 --topic test --from-beginning
+OpenJDK 64-Bit Server VM warning: If the number of processors is expected to increase from one, then you should configure the number of parallel GC threads appropriately using -XX:ParallelGCThreads=N
+message 3
+message 6
+333333333
+5555555555
+5
+5
+
+
+#问题，发现为啥顺序不对，生产者的输入顺序和消费者的读取顺序不一致.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;5-关闭集群&#34;&gt;5. 关闭集群&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;# 删除topic
+bin/kafka-topics.sh --delete --zookeeper 172.10.10.226:2181,172.10.10.225:2181,172.10.10.224:2181 --topic test
+
+# 关闭kafka ,3台都执行
+[root@worker2 kafka_2.12-1.1.0]$ bin/kafka-server-stop.sh conf/server.properties
+
+[root@worker2 kafka_2.12-1.1.0]$ bin/kafka-server-stop.sh conf/server.properties
+
+[root@worker2 kafka_2.12-1.1.0]$ bin/kafka-server-stop.sh conf/server.properties
+
+# 关闭zookeeper ,3台都执行
+[root@master zookeeper-3.4.11]$ bin/zkServer.sh stop conf/zoo.cfg
+
+[root@worker1 zookeeper-3.4.11]$ bin/zkServer.shstop conf/zoo.cfg
+
+[root@worker2 zookeeper-3.4.11]$ bin/zkServer.shstop conf/zoo.cfg
+&lt;/code&gt;&lt;/pre&gt;
+">kafka集群搭建</a>
+      </div>
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://yanhaha111.github.io/yanjianshuai/post/huan-ying-da-jia-lai-dao-xiao-shuai-de-bo-ke/"" data-c="
+          &lt;p&gt;🤖🤖🤖&lt;br&gt;
+&lt;img src=&#34;https://yanhaha111.github.io/yanjianshuai//post-images/1613846701306.jpg&#34; alt=&#34;&#34; loading=&#34;lazy&#34;&gt;&lt;/p&gt;
+">欢迎大家来到小帅的博客！！！</a>
+      </div>
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://yanhaha111.github.io/yanjianshuai/post/percona-mo-ban-jian-kong-mysql/"" data-c="
+          &lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;https://www.qstack.com.cn/archives/213.html
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;1安装php环境&#34;&gt;1.安装php环境&lt;/h2&gt;
+&lt;p&gt;percona需要php环境&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-csharp&#34;&gt;[root@m01 /data/soft]# yum install php php-mysql -y
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;2下载软件&#34;&gt;2.下载软件&lt;/h2&gt;
+&lt;figure data-type=&#34;image&#34; tabindex=&#34;1&#34;&gt;&lt;img src=&#34;https:////upload-images.jianshu.io/upload_images/14248468-7b1acd1996119ac2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1200/format/webp&#34; alt=&#34;img&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
+&lt;figure data-type=&#34;image&#34; tabindex=&#34;2&#34;&gt;&lt;img src=&#34;https:////upload-images.jianshu.io/upload_images/14248468-1e99a6aa631efb9b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1200/format/webp&#34; alt=&#34;img&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
+&lt;p&gt;注意，安装完成后会有提示模版的路径位置&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-ruby&#34;&gt;[root@m01 ~]# cd /data/soft/
+[root@m01 /data/soft]# wget https://www.percona.com/downloads/percona-monitoring-plugins/percona-monitoring-plugins-1.1.8/binary/redhat/7/x86_64/percona-zabbix-templates-1.1.8-1.noarch.rpm
+[root@m01 /data/soft]# rpm -ivh percona-zabbix-templates-1.1.8-1.noarch.rpm 
+警告：percona-zabbix-templates-1.1.8-1.noarch.rpm: 头V4 DSA/SHA1 Signature, 密钥 ID cd2efd2a: NOKEY
+准备中...                          ################################# [100%]
+正在升级/安装...
+   1:percona-zabbix-templates-1.1.8-1 ################################# [100%]
+
+Scripts are installed to /var/lib/zabbix/percona/scripts
+Templates are installed to /var/lib/zabbix/percona/templates
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;3查看目录&#34;&gt;3.查看目录&lt;/h2&gt;
+&lt;p&gt;进入安装目录会发现有2个目录，一个是脚本目录，一个是模版目录&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-csharp&#34;&gt;[root@m01 ~]# cd /var/lib/zabbix/percona/
+[root@m01 /var/lib/zabbix/percona]# tree
+.
+├── scripts
+│   ├── get_mysql_stats_wrapper.sh
+│   └── ss_get_mysql_stats.php
+└── templates
+    ├── userparameter_percona_mysql.conf
+    └── zabbix_agent_template_percona_mysql_server_ht_2.0.9-sver1.1.8.xml
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中脚本目录里有2个脚本，用来获取数据库信息&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-csharp&#34;&gt;[root@m01 /var/lib/zabbix/percona]# cd scripts/
+[root@m01 /var/lib/zabbix/percona/scripts]# ls
+get_mysql_stats_wrapper.sh  ss_get_mysql_stats.php
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;4修改get_mysql_stats_wrappersh&#34;&gt;4.修改get_mysql_stats_wrapper.sh&lt;/h2&gt;
+&lt;p&gt;修改get_mysql_stats_wrapper数据库登陆信息&lt;br&gt;
+第19行添加mysql账号密码&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-dart&#34;&gt;[root@m01 v]# sed -n &#39;19p&#39; get_mysql_stats_wrapper.sh 
+    RES=`HOME=~zabbix mysql -uroot -p123123 -e &#39;SHOW SLAVE STATUS\G&#39; | egrep &#39;(Slave_IO_Running|Slave_SQL_Running):&#39; | awk -F: &#39;{print $2}&#39; | tr &#39;\n&#39; 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;5修改ss_get_mysql_statsphp&#34;&gt;5.修改ss_get_mysql_stats.php&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&#34;language-php&#34;&gt;[root@m01 /var/lib/zabbix/percona/scripts]# sed -n &#39;30,31p&#39; ss_get_mysql_stats.php 
+$mysql_user = &#39;root&#39;;
+$mysql_pass = &#39;123123&#39;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;6复制自定义监控项配置文件到zabbix目录&#34;&gt;6.复制自定义监控项配置文件到zabbix目录&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&#34;language-csharp&#34;&gt;[root@m01 ~]# cd /var/lib/zabbix/percona/templates/
+[root@m01 /var/lib/zabbix/percona/templates]# cp userparameter_percona_mysql.conf /etc/zabbix/zabbix_agentd.d/
+[root@m01 /var/lib/zabbix/percona/templates]# cd /etc/zabbix/zabbix_agentd.d/
+[root@m01 /etc/zabbix/zabbix_agentd.d]# ls
+userparameter_mysql.conf  userparameter_percona_mysql.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;7重启agent&#34;&gt;7.重启agent&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&#34;language-csharp&#34;&gt;[root@m01 ~]# systemctl restart zabbix-agent 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;8测试key&#34;&gt;8.测试key&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;[root@m01 ~]# zabbix_get -s 192.168.5.50 -k MySQL.Sort-scan
+24
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;9导入模版&#34;&gt;9.导入模版&lt;/h2&gt;
+&lt;p&gt;官方自带的模版有点问题，需要先装在2.x版本然后导出来，这里使用网友已经修改好的模版上传&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-cpp&#34;&gt;http://pan.baidu.com/s/1pL1wDYj
+&lt;/code&gt;&lt;/pre&gt;
+&lt;figure data-type=&#34;image&#34; tabindex=&#34;3&#34;&gt;&lt;img src=&#34;https:////upload-images.jianshu.io/upload_images/14248468-1460dad84fcf4215.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1200/format/webp&#34; alt=&#34;img&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
+&lt;h2 id=&#34;10主机链接模版&#34;&gt;10.主机链接模版&lt;/h2&gt;
+&lt;figure data-type=&#34;image&#34; tabindex=&#34;4&#34;&gt;&lt;img src=&#34;https:////upload-images.jianshu.io/upload_images/14248468-043e5a2bfdbae0c8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1200/format/webp&#34; alt=&#34;img&#34; loading=&#34;lazy&#34;&gt;&lt;/figure&gt;
+&lt;h2 id=&#34;xx报错解决&#34;&gt;xx.报错解决&lt;/h2&gt;
+&lt;p&gt;查看监控发现没有数据显示不支持类型&lt;br&gt;
+查看zabbix-server发现因为tmp的文件没有权限，因为刚才手动执行了脚本，所以文件属性是root，将文件删除后由zabbix自己创建解决问题&lt;br&gt;
+报错日志如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;2846:20190811:202708.785 item &amp;quot;Zabbix server:MySQL.State-init&amp;quot; became not supported: Value &amp;quot;rm: 无法删除&amp;quot;/tmp/localhost-mysql_cacti_stats.txt&amp;quot;: 不允许的操作
+0&amp;quot; of type &amp;quot;string&amp;quot; is not suitable for value type &amp;quot;Numeric (float)&amp;quot;
+  2843:20190811:202709.787 item &amp;quot;Zabbix server:MySQL.State-locked&amp;quot; became not supported: Value &amp;quot;rm: 无法删除&amp;quot;/tmp/localhost-mysql_cacti_stats.txt&amp;quot;: 不允许的操作
+0&amp;quot; of type &amp;quot;string&amp;quot; is not suitable for value type &amp;quot;Numeric (float)&amp;quot;
+  2844:20190811:202710.788 item &amp;quot;Zabbix server:MySQL.State-login&amp;quot; became not supported: Value &amp;quot;rm: 无法删除&amp;quot;/tmp/localhost-mysql_cacti_stats.txt&amp;quot;: 不允许的操作
+0&amp;quot; of type &amp;quot;string&amp;quot; is not suitable for value type &amp;quot;Numeric (float)&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+">percona模版监控mysql</a>
+      </div>
+      
+      <div class="item">
+        <a class="result-title" style="opacity: 0;" href="https://yanhaha111.github.io/yanjianshuai/post/about/"" data-c="
+          &lt;blockquote&gt;
+&lt;p&gt;欢迎来到小帅的博客，很高兴遇见你！🤝&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;关于本站&#34;&gt;🏠 关于本站&lt;/h2&gt;
+&lt;h2 id=&#34;博主是谁&#34;&gt;👨‍💻 博主是谁&lt;/h2&gt;
+&lt;p&gt;闫小帅&lt;/p&gt;
+&lt;h2 id=&#34;兴趣爱好&#34;&gt;⛹ 兴趣爱好&lt;/h2&gt;
+&lt;p&gt;🏀🏓🏸🐶🐱🎱🎲&lt;/p&gt;
+&lt;h2 id=&#34;联系我呀&#34;&gt;📬 联系我呀&lt;/h2&gt;
+&lt;p&gt;17631778479&lt;/p&gt;
+">关于</a>
+      </div>
+      
+    </div>
+    <div class="page">
+      <div id="page_ul"></div>
+    </div>
+  </div>
+</div>
+<script>
+  !function () {
+    let searchMask = document.querySelector('#search_mask');
+    let result = document.querySelector('#result');
+    let items = document.querySelectorAll('.item');
+    let searchBox = document.querySelector('#search');
+    let statCount = document.querySelector('#stat_count');
+    let statTimes = document.querySelector('#stat_times');
+    let pageUl = document.querySelector('#page_ul');
+    let close = document.querySelector('#close');
+    
+    close.addEventListener('click', function() {
+      searchMask.style = 'display: none;'
+    })
+
+    let finds = [];
+    let contents = [];
+    let pageSize = 10;
+    items.forEach(item => {
+      let a = item.querySelector('a');
+      contents.push({
+        title: a.innerText,
+        details: a.dataset.c,
+        link: a.href
+      })
+      item.remove();
+    })
+
+    function insertStr(soure, start, count) {
+      let newStr = soure.substr(start, count);
+      return soure.slice(0, start) + '<em>' + newStr + '</em>' + soure.slice(start + count);
+    }
+
+    pageUl.addEventListener('click', function(event) {
+      let target = event.target;
+      if (target.__proto__ === HTMLSpanElement.prototype) {
+        appendResults(parseInt(target.dataset.i));
+      }
+    })
+
+    function appendResults(index) {
+      let htmlResult = '';
+      let start = index || 0;
+      let end = Math.min(start + pageSize, finds.length);
+      for (let i = start; i < end; i++) {
+        const current = finds[i];
+        let html = current.title;
+        let sum = 0;
+        let positions = current.positions;
+        positions.forEach(position => {
+          html = insertStr(html, position.start + sum, position.count);
+          sum += 9;
+        })
+        htmlResult += `<div class="item"><a class="result-title" href="${current.link}">${html}</a></div>`;
+      }
+      result.innerHTML = htmlResult;
+      pageUl.innerHTML = '';
+      let count = finds.length / pageSize;
+      let lis = '';
+      if (start !== 0) {
+        lis += `<span class="fa fa-angle-left" data-i='${start - 1}'></span>`;
+      }
+      for (let i = 0; i < count; i++) {
+        lis += `<span class='${i === start?'current':''}' data-i='${i}'>${i+1}</span>`;     
+      }
+      if (start+1 < count) {
+        lis += `<span class="fa fa-angle-right" data-i='${start+1}'></span>`;  
+      }
+      pageUl.innerHTML = lis;
+    }
+
+    function search(delay) {
+      let timer = null
+      return function () {
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+          let start = Date.now();
+          let segments = searchBox.value.split(' ').filter(c => c != '');
+          if (segments.length <= 0) {
+            return;
+          }
+          finds = [];
+          let htmlResult = '';
+          contents.forEach(content => {
+            let title = content.title;
+            let positions = [];
+            let find = false;
+            segments.forEach((segment) => {
+              if (content.title.includes(segment)) {
+                find = true;
+                positions.push({
+                  start: content.title.indexOf(segment),
+                  count: segment.length
+                })
+              } else if (content.details.includes(segment)) {
+                find = true;
+              }
+            });
+            if (find) {
+              finds.push({
+                title: content.title,
+                link: content.link,
+                positions
+              });
+            }
+          })
+          appendResults(0);
+          statCount.textContent = finds.length;
+          statTimes.textContent = Date.now() - start;
+        }, delay)
+      }
+    }
+    searchBox.addEventListener('input', search(200));
+  }()
+</script>
+
+<input hidden id="copy" />
+<script>
+  !function () {
+    let times = document.querySelectorAll('.publish-time');
+    for (let i = 0; i < times.length; i++) {
+      let date = times[i].dataset.t;
+      let time = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
+      if (time < 60) {
+        str = time + '秒之前';
+      } else if (time < 3600) {
+        str = Math.floor(time / 60) + '分钟之前';
+      } else if (time >= 3600 && time < 86400) {
+        str = Math.floor(time / 3600) + '小时之前';
+      } else if (time >= 86400 && time < 259200) {
+        str = Math.floor(time / 86400) + '天之前';
+      } else {
+        str = times[i].textContent;
+      }
+      times[i].textContent = str;
+    }
+  }();
+</script>
+
+<script>
+  let language = '';
+  if (language !== '') {
+    let map = new Map();
+    if (language === 'en') {
+      map.set('search', 'Search');
+      map.set('category', 'Categories');
+      map.set('article', 'Articles');
+      map.set('tag', 'Tags');
+      map.set('top', 'Top');
+      map.set('publish', 'published');
+      map.set('minute', ' minutes');
+      map.set('read-more', 'Read More');
+      map.set('view', 'View');
+      map.set('words', ' words');
+      map.set('category-in', 'category in');
+      map.set('preview', 'Meta');
+      map.set('index', 'Toc');
+      map.set('no-archives', "You haven't created yet");
+      map.set('archives', " articles in total");
+      map.set('cloud-tags', " tags in total");
+      map.set('copyright', "Copyright: ");
+      map.set('author', "Author: ");
+      map.set('link', "Link: ");
+      map.set('leave-message', "Leave a message");
+      map.set('format', "Links Format");
+      map.set('site-name', "Name: ");
+      map.set('site-link', "Link: ");
+      map.set('site-desc', "Desc: ");
+      map.set('stat', " related results, taking ");
+      map.set('stat-time', " ms");
+      map.set('site-img', "Image: ");
+    }
+
+    if (map.size > 0) {
+      let lanElems = document.querySelectorAll('.language');
+      lanElems.forEach(elem => {
+        let lan = elem.dataset.lan, text = map.get(lan);
+        if (elem.__proto__ === HTMLInputElement.prototype) {
+          elem.placeholder = text
+        } else {
+          if (elem.dataset.count) {
+            text = elem.dataset.count + text;
+          }
+          elem.textContent = text;
+        }
+      })
+    }
+  }
+  //拿来主义(真香)^_^，Clipboard 实现摘自掘金 https://juejin.im/post/5aefeb6e6fb9a07aa43c20af
+  window.Clipboard = (function (window, document, navigator) {
+    var textArea,
+      copy;
+
+    // 判断是不是ios端
+    function isOS() {
+      return navigator.userAgent.match(/ipad|iphone/i);
+    }
+    //创建文本元素
+    function createTextArea(text) {
+      textArea = document.createElement('textArea');
+      textArea.value = text;
+      textArea.style.width = 0;
+      textArea.style.height = 0;
+      textArea.clientHeight = 0;
+      textArea.clientWidth = 0;
+      document.body.appendChild(textArea);
+    }
+    //选择内容
+    function selectText() {
+      var range,
+        selection;
+
+      if (isOS()) {
+        range = document.createRange();
+        range.selectNodeContents(textArea);
+        selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        textArea.setSelectionRange(0, 999999);
+      } else {
+        textArea.select();
+      }
+    }
+
+    //复制到剪贴板
+    function copyToClipboard() {
+      try {
+        document.execCommand("Copy")
+      } catch (err) {
+        alert("复制错误！请手动复制！")
+      }
+      document.body.removeChild(textArea);
+    }
+
+    copy = function (text) {
+      createTextArea(text);
+      selectText();
+      copyToClipboard();
+    };
+
+    return {
+      copy: copy
+    };
+  })(window, document, navigator);
+
+  function copyCode(e) {
+    if (e.srcElement.tagName === 'SPAN' && e.srcElement.classList.contains('copy-code')) {
+      let code = e.currentTarget.querySelector('code');
+      var text = code.innerText;
+      if (e.srcElement.textContent === '复制成功') {
+        return;
+      }
+      e.srcElement.textContent = '复制成功';
+      (function (elem) {
+        setTimeout(() => {
+          if (elem.textContent === '复制成功') {
+            elem.textContent = '复制代码'
+          }
+        }, 1000);
+      })(e.srcElement)
+      Clipboard.copy(text);
+    }
+  }
+
+  let pres = document.querySelectorAll('pre');
+  pres.forEach(pre => {
+    let code = pre.querySelector('code');
+    let copyElem = document.createElement('span');
+    copyElem.classList.add('copy-code');
+    copyElem.textContent = '复制代码';
+    pre.appendChild(copyElem);
+    pre.onclick = copyCode
+  })
+
+</script>
+<script src="/media/js/motion.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
+<script>
+  var scroll = new SmoothScroll('a[href*="#"]', {
+    speed: 200
+  });
+</script>
 
 
 
+<script src="/media/js/cool.js"></script>
 
-  </body>
+
+
+  <div class="snow-container"></div>
+  <script src="/media/js/bg/snow.js"></script>
+
 </html>
