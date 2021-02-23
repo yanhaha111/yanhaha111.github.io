@@ -760,21 +760,9 @@ a {
 }
 
       .sidebar {
-        width: 350px;
+        width: 360px;
       }
       .main-container {
-        margin-left: 350px;
-      }
-    
-      .sidebar .top-container .site-nav {
-        color: #e9ecef;
-      }
-    
-      .post-item .right .feature-container {
-        border-radius: 6px;
-      }
-    
-      body {
-        background: #adb5bd;
+        margin-left: 360px;
       }
     
