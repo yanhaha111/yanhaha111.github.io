@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>kafka集群搭建 | 超人不会飞</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yanhaha111.github.io/yanjianshuai//favicon.ico?v=1614052725964">
+<link rel="stylesheet" href="https://yanhaha111.github.io/yanjianshuai//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="kafka+zookper
+一. 环境准备
+关闭selinux，关闭防火墙
+kafka 版本:  kafka_2.11-2.1.0
+zookpeeper版本: 3.4.12
+jdk: 1.8
+
+
+
+ip
+角色
+系统
+
+
+
+
+172.10.1..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yanhaha111.github.io/yanjianshuai/">
+        <img src="https://yanhaha111.github.io/yanjianshuai//images/avatar.png?v=1614052725964" class="site-logo">
+        <h1 class="site-title">超人不会飞</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="https://yanhaha111.github.io/yanjianshuai/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="https://yanhaha111.github.io/yanjianshuai/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="https://yanhaha111.github.io/yanjianshuai/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="https://yanhaha111.github.io/yanjianshuai/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/yanhaha111/yanhaha111.github.io" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      路漫漫其修远兮，吾将上下而求索
+    </div>
+    <div class="site-footer">
+       | <a class="rss" href="https://yanhaha111.github.io/yanjianshuai//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">kafka集群搭建</h2>
+            <div class="post-date">2021-02-21</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="kafkazookper">kafka+zookper</h2>
+<h2 id="一-环境准备">一. 环境准备</h2>
+<p>关闭selinux，关闭防火墙</p>
+<p>kafka 版本:  kafka_2.11-2.1.0</p>
+<p>zookpeeper版本: 3.4.12</p>
+<p>jdk: 1.8</p>
+<table>
+<thead>
+<tr>
+<th>ip</th>
+<th>角色</th>
+<th>系统</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>172.10.10.226</td>
+<td>zookeeper+kafka</td>
+<td>redhat7.3</td>
+</tr>
+<tr>
+<td>172.10.10.225</td>
+<td>zookeeper+kafka</td>
+<td>redhat7.3</td>
+</tr>
+<tr>
+<td>172.10.10.224</td>
+<td>zookeeper+kafka</td>
+<td>redhat7.3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="二-zookeeper集群搭建">二. zookeeper集群搭建</h2>
+<h3 id="21-jdk-安装">2.1 jdk 安装</h3>
+<p>也可自己下载安装,这里用的yum</p>
+<p>JDK下载地址：http://www.oracle.com/technetwork/java/javase/downloads/index.html</p>
+<pre><code>rpm -ivh jdk-8u101-linux-x64.rpm
+yum install java-1.8.0
+</code></pre>
+<h3 id="22-zookeeper安装">2.2 zookeeper安装</h3>
+<p>Zookeeper链接：http://zookeeper.apache.org/</p>
+<pre><code>wget http://mirrors.cnnic.cn/apache/zookeeper/zookeeper-3.4.12/zookeeper-3.4.12.tar.gz -P /mnt
+tar zxvf zookeeper-3.4.12.tar.gz -C /mnt
+cd /mnt &amp;&amp; mv zookeeper-3.4.12 zookeeper
+cd zookeeper
+cp conf/zoo_sample.cfg conf/zoo.cfg
+</code></pre>
+<p>#把zookeeper加入到环境变量</p>
+<p>echo -e &quot;# append zk_env\nexport PATH=$PATH:/opt/zookeeper/bin&quot; &gt;&gt; /etc/profile</p>
+<h3 id="23-zookeeper集群配置">2.3  zookeeper集群配置</h3>
+<p>2.3.1 zookeeper配置文件修改.在zookeeper的conf目录创建</p>
+<pre><code class="language-bash">tickTime=2000
+initLimit=10
+syncLimit=5
+dataLogDir=/mnt/zookeeper/logs
+dataDir=/mnt/zookeeper/data
+clientPort=2181
+#autopurge.snapRetainCount=500
+#autopurge.purgeInterval=24
+server.1= 172.10.10.226:2888:3888  #server.1 中的1表示的该node的id，要和后面myid文件中保持一致
+server.2= 172.10.10.225:2888:3888
+server.3= 172.10.10.224:2888:3888#######参数说明
+</code></pre>
+<pre><code class="language-css">tickTime这个时间是作为zookeeper服务器之间或客户端与服务器之间维持心跳的时间间隔,也就是说每个tickTime时间就会发送一个心跳。
+
+initLimit这个配置项是用来配置zookeeper接受客户端（这里所说的客户端不是用户连接zookeeper服务器的客户端,而是zookeeper服务器集群中连接到leader的follower 服务器）初始化连接时最长能忍受多少个心跳时间间隔数。
+
+当已经超过10个心跳的时间（也就是tickTime）长度后 zookeeper 服务器还没有收到客户端的返回信息,那么表明这个客户端连接失败。总的时间长度就是 10*2000=20秒。
+
+syncLimit这个配置项标识leader与follower之间发送消息,请求和应答时间长度,最长不能超过多少个tickTime的时间长度,总的时间长度就是5*2000=10秒。
+
+dataDir顾名思义就是zookeeper保存数据的目录,默认情况下zookeeper将写数据的日志文件也保存在这个目录里；
+
+clientPort这个端口就是客户端连接Zookeeper服务器的端口,Zookeeper会监听这个端口接受客户端的访问请求；
+
+server.A=B:C:D中的A是一个数字,表示这个是第几号服务器,B是这个服务器的IP地址，C第一个端口用来集群成员的信息交换,表示这个服务器与集群中的leader服务器交换信息的端口，D是在leader挂掉时专门用来进行选举leader所用的端口。
+
+\#创建相关目录，三台节点都需要
+
+mkdir -p /mnt/zookeeper/{logs,data}
+
+\#其余zookeeper节点安装完成之后，同步配置文件zoo.cfg。
+
+</code></pre>
+<p>2.3.2  创建serverid表识</p>
+<p>除了修改zoo.cfg配置文件外,zookeeper集群模式下还要配置一个myid文件,这个文件需要放在dataDir目录下。</p>
+<p>这个文件里面有一个数据就是A的值（该A就是zoo.cfg文件中server.A=B:C:D中的A）,在zoo.cfg文件中配置的dataDir路径中创建myid文件。</p>
+<p>#在172.10.10.226服务器上面创建myid文件，并设置值为1，同时与zoo.cfg文件里面的server.1保持一致，如下</p>
+<pre><code>echo &quot;1&quot; &gt; /mnt/zookeeper/data/myid
+</code></pre>
+<p>其它2台id分别为  2  ，3</p>
+<h3 id="24-启动每个服务器上的集群节点">2.4. 启动每个服务器上的集群节点</h3>
+<p>/mnt/zookeeper/bin/zkServer.sh start   #启动</p>
+<p>/mnt/zookeeper/bin/zkServer.sh status  #查看</p>
+<p>bin/zkCli.sh -server 172.10.10.225:2181  #模拟客户端连接</p>
+<p>Zookeeper集群搭建完毕之后，可以通过客户端脚本连接到zookeeper集群上面，对客户端来说，zookeeper集群是一个整体，连接到zookeeper集群实际上感觉在独享整个集群的服务。</p>
+<h2 id="三-kafka集群搭建">三. kafka集群搭建</h2>
+<h3 id="1-每台服务器上下载解压kafka">1. 每台服务器上下载解压kafka.</h3>
+<p>下载地址：  http://kafka.apache.org/downloads</p>
+<h3 id="2-配置conf目录下的serverproperties">2. 配置conf目录下的server.properties</h3>
+<pre><code class="language-shell">[root@r0 kafka_2.11-2.1.0]# grep -E  -v &quot;^#|^$&quot; config/server.properties 
+broker.id=0  ###集群中唯一
+listeners=PLAINTEXT://172.10.10.226:9092 ####本地ip:端口
+num.network.threads=3
+num.io.threads=8
+socket.send.buffer.bytes=102400
+socket.receive.buffer.bytes=102400
+socket.request.max.bytes=104857600
+log.dirs=/tmp/kafka-logs
+num.partitions=3  #### 一个topic的partition个数
+num.recovery.threads.per.data.dir=1
+offsets.topic.replication.factor=1
+transaction.state.log.replication.factor=1
+transaction.state.log.min.isr=1
+replication.factor=2   ##### 每个partition的副本
+log.retention.hours=168
+log.segment.bytes=1073741824
+log.retention.check.interval.ms=300000
+zookeeper.connect=172.10.10.226:2181,172.10.10.225:2181,172.10.10.224:2181 ####zookeeper集群.
+zookeeper.connection.timeout.ms=6000
+group.initial.rebalance.delay.ms=0delete.topic.enable=true  ########可删除topic
+ 
+</code></pre>
+<p>将上述配置文件复制到另外2台服务器，并修改每个节点对应的 server.properties 文件的 broker.id和listenrs</p>
+<h3 id="3-启动服务">3. 启动服务</h3>
+<pre><code class="language-bash">bin/kafka-server-start.sh config/server.properties &amp;
+</code></pre>
+<h3 id="4-kafkazookeeper测试">4. kafka+zookeeper测试</h3>
+<p>创建topic</p>
+<pre><code>bin/kafka-topics.sh --create --zookeeper 172.10.10.226:2181,172.10.10.225:2182,172.10.10.224:2183 --replication-factor 2  --partitions 3 --topic test
+</code></pre>
+<p>显示topic</p>
+<pre><code>bin/kafka-topics.sh --describe --zookeeper 172.10.10.226:2181,172.10.10.225:2182,172.10.10.224:2183 --topic test
+OpenJDK 64-Bit Server VM warning: If the number of processors is expected to increase from one, then you should configure the number of parallel GC threads appropriately using -XX:ParallelGCThreads=N
+Topic:test    PartitionCount:3    ReplicationFactor:2    Configs:
+    Topic: test    Partition: 0    Leader: 0    Replicas: 0,1    Isr: 0,1
+    Topic: test    Partition: 1    Leader: 1    Replicas: 1,2    Isr: 1,2
+    Topic: test    Partition: 2    Leader: 2    Replicas: 2,0    Isr: 2,0
+</code></pre>
+<p>创建 producer(生产者):</p>
+<pre><code>[root@r0 kafka_2.11-2.1.0]# bin/kafka-console-producer.sh --broker-list 172.10.10.226:9092 -topic test
+OpenJDK 64-Bit Server VM warning: If the number of processors is expected to increase from one, then you should configure the number of parallel GC threads appropriately using -XX:ParallelGCThreads=N
+&gt;
+
+&gt;&gt;1111
+&gt;2222
+&gt;333
+</code></pre>
+<p>创建 consumer(消费者):</p>
+<pre><code>[root@r2 kafka_2.11-2.1.0]# bin/kafka-console-consumer.sh --bootstrap-server 172.10.10.226:9092,172.10.10.225:9092,172.10.10.224:9092 --topic test --from-beginning
+OpenJDK 64-Bit Server VM warning: If the number of processors is expected to increase from one, then you should configure the number of parallel GC threads appropriately using -XX:ParallelGCThreads=N
+message 3
+message 6
+333333333
+5555555555
+5
+5
+
+
+#问题，发现为啥顺序不对，生产者的输入顺序和消费者的读取顺序不一致.
+</code></pre>
+<h3 id="5-关闭集群">5. 关闭集群</h3>
+<pre><code># 删除topic
+bin/kafka-topics.sh --delete --zookeeper 172.10.10.226:2181,172.10.10.225:2181,172.10.10.224:2181 --topic test
+
+# 关闭kafka ,3台都执行
+[root@worker2 kafka_2.12-1.1.0]$ bin/kafka-server-stop.sh conf/server.properties
+
+[root@worker2 kafka_2.12-1.1.0]$ bin/kafka-server-stop.sh conf/server.properties
+
+[root@worker2 kafka_2.12-1.1.0]$ bin/kafka-server-stop.sh conf/server.properties
+
+# 关闭zookeeper ,3台都执行
+[root@master zookeeper-3.4.11]$ bin/zkServer.sh stop conf/zoo.cfg
+
+[root@worker1 zookeeper-3.4.11]$ bin/zkServer.shstop conf/zoo.cfg
+
+[root@worker2 zookeeper-3.4.11]$ bin/zkServer.shstop conf/zoo.cfg
+</code></pre>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yanhaha111.github.io/yanjianshuai/post/huan-ying-da-jia-lai-dao-xiao-shuai-de-bo-ke/">
+                  <h3 class="post-title">
+                    欢迎大家来到小帅的博客！！！
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: '',
+        owner: '',
+        admin: [''],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

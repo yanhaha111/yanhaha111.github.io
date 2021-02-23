@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>文章归档 | 超人不会飞</title>
+<title>欢迎大家来到小帅的博客！！！ | 超人不会飞</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -12,13 +12,22 @@
 <link rel="stylesheet" href="https://yanhaha111.github.io/yanjianshuai//styles/main.css">
 
 
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
 
 <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
 
 
-    <meta name="description" content="路漫漫其修远兮，吾将上下而求索">
+    <meta name="description" content="🤖🤖🤖
+
+..." />
+    <meta name="keywords" content="" />
   </head>
   <body>
     <div id="app" class="main">
@@ -92,50 +101,36 @@
 
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
-          
+          <div class="post-detail">
+            <h2 class="post-title">欢迎大家来到小帅的博客！！！</h2>
+            <div class="post-date">2021-02-21</div>
+            
+            <div class="post-content" v-pre>
+              <p>🤖🤖🤖<br>
+<img src="https://yanhaha111.github.io/yanjianshuai//post-images/1613846701306.jpg" alt="" loading="lazy"></p>
 
-          <h2 class="archives-title">文章归档</h2>
-          <div class="archives-container">
+            </div>
             
-              <h2 class="year" data-aos="fade-in" data-aos-delay="500">2021</h2>
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yanhaha111.github.io/yanjianshuai/post/percona-mo-ban-jian-kong-mysql/">
+                  <h3 class="post-title">
+                    percona模版监控mysql
+                  </h3>
+                </a>
+              </div>
+            
+
+            
               
-                
-                  <article class="post">
-                    <a href="https://yanhaha111.github.io/yanjianshuai/post/kafka-ji-qun-da-jian/">
-                      <h2 class="post-title">
-                        kafka集群搭建
-                      </h2>
-                    </a>
-                  </article>
-                
+                <div id="gitalk-container" data-aos="fade-in"></div>
               
-                
-                  <article class="post">
-                    <a href="https://yanhaha111.github.io/yanjianshuai/post/huan-ying-da-jia-lai-dao-xiao-shuai-de-bo-ke/">
-                      <h2 class="post-title">
-                        欢迎大家来到小帅的博客！！！
-                      </h2>
-                    </a>
-                  </article>
-                
-              
-                
-                  <article class="post">
-                    <a href="https://yanhaha111.github.io/yanjianshuai/post/percona-mo-ban-jian-kong-mysql/">
-                      <h2 class="post-title">
-                        percona模版监控mysql
-                      </h2>
-                    </a>
-                  </article>
-                
+
               
             
+
           </div>
-
-          <div class="pagination-container">
-  
-  
-</div>
 
         </div>
       </div>
@@ -161,6 +156,29 @@ var app = new Vue({
     hljs.initHighlightingOnLoad()
   </script>
 
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '',
+        clientSecret: '',
+        repo: '',
+        owner: '',
+        admin: [''],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
 
 
 
