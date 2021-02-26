@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://yanhaha111.github.io/</id>
+    <id>https://yanhaha111.github.io</id>
     <title>超人不会飞</title>
-    <updated>2021-02-26T01:41:05.863Z</updated>
+    <updated>2021-02-26T05:33:06.866Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://yanhaha111.github.io/"/>
+    <link rel="alternate" href="https://yanhaha111.github.io"/>
     <link rel="self" href="https://yanhaha111.github.io/atom.xml"/>
     <subtitle>路漫漫其修远兮，吾将上下而求索</subtitle>
     <logo>https://yanhaha111.github.io/images/avatar.png</logo>
