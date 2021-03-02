@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yanhaha111.github.io</id>
     <title>超人不会飞</title>
-    <updated>2021-02-26T12:30:53.102Z</updated>
+    <updated>2021-03-02T06:34:34.906Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yanhaha111.github.io"/>
     <link rel="self" href="https://yanhaha111.github.io/atom.xml"/>
@@ -16,13 +16,6 @@
         <link href="https://yanhaha111.github.io/post/kafka-ji-qun-da-jian/">
         </link>
         <updated>2021-02-21T11:31:55.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[欢迎大家来到小帅的博客！！！]]></title>
-        <id>https://yanhaha111.github.io/post/huan-ying-da-jia-lai-dao-xiao-shuai-de-bo-ke/</id>
-        <link href="https://yanhaha111.github.io/post/huan-ying-da-jia-lai-dao-xiao-shuai-de-bo-ke/">
-        </link>
-        <updated>2021-02-20T18:43:03.000Z</updated>
     </entry>
     <entry>
         <title type="html"><![CDATA[percona模版监控mysql]]></title>
